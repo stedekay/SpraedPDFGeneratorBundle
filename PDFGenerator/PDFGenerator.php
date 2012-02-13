@@ -14,9 +14,6 @@ class PDFGenerator {
 
 		$command = $this->buildCommand($htmlFile, $pdfFile);
 
-		var_dump($command);
-		exit();
-
 		$result = $this->generate($htmlFile, $pdfFile);
 
 		unlink($htmlFile);
