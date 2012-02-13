@@ -1,0 +1,5 @@
+services:
+  spraed.pdf.generator:
+    class: Spraed\PDFGeneratorBundle\PDFGenerator\PdfGenerator  
+  
+  
