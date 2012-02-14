@@ -45,9 +45,9 @@ with the XHTML and the url of the PDF:
 	$html = $this->renderView('AcmeDemoBundle:Default:index.html.twig');
 	$pdfGenerator = $this->get('spraed.pdf.generator');
 
-Also you are able to set an download option (true/false), standard is false
+Also you are able to set a download (true/false standard false) and a encoding option.
 
-	$pdfGenerator->generatePDF($html, 'out.pdf', true);
+	$pdfGenerator->generatePDF($html, 'UTF-8', 'out.pdf', true);
 
 To define proper print css you might want to read into the w3.org's hints on that: [w3.org]
 [w3.org]: http://www.w3.org/TR/css3-page/

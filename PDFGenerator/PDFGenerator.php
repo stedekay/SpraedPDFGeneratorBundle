@@ -9,7 +9,7 @@ class PDFGenerator {
      * @param type $pdfFile - name of the pdf file
      * @param type $downloadable - offer pdf as download or open in new browser tab
      */
-    public function generatePDF($html, $pdfFile = null, $downloadable = false) {
+    public function generatePDF($html, $encoding, $pdfFile = null, $downloadable = false) {
 
         if ($pdfFile === null) {
             $pdfFile = 'out';
@@ -20,7 +20,7 @@ class PDFGenerator {
         $pdfFile = $this->createTemporaryFile($pdfFile, 'pdf');
         $htmlFile = $this->createTemporaryFile('pdf_html', 'html', $html);
 
-        $result = $this->generate($htmlFile, $pdfFile, $pdfFileName, $downloadable);
+        $result = $this->generate($htmlFile, $encoding, $pdfFile, $pdfFileName, $downloadable);
 
         // remove temporary file from hdd
         unlink($htmlFile);
@@ -31,10 +31,11 @@ class PDFGenerator {
      * @param type $pdfFile - the temporaray pdf file which the stream will be written to
      * @return string
      */
-    private function buildCommand($htmlFile, $pdfFile) {
+    private function buildCommand($htmlFile, $encoding, $pdfFile) {
         $command = 'java -jar ';
-        $command .= '"' . __DIR__ . '/../Resources/java/spraed-pdf-generator.jar" ';
-        $command .= '"' . $htmlFile . '" "' . $pdfFile . '"';
+        $command .= '"' . __DIR__ . '/../Resources/java/spraed-pdf-generator.jar"';
+        $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
+        $command .= ' --encoding ' . $encoding;
 
         return $command;
     }
@@ -45,9 +46,9 @@ class PDFGenerator {
      * @param type $pdfFileName -  filename of the pdf
      * @param type $downloadable - offer pdf as download or open in new browser tab
      */
-    public function generate($htmlFile, $pdfFile, $pdfFileName, $downloadable) {
+    public function generate($htmlFile, $encoding, $pdfFile, $pdfFileName, $downloadable) {
 
-        $command = $this->buildCommand($htmlFile, $pdfFile);
+        $command = $this->buildCommand($htmlFile, $encoding, $pdfFile);
 
         list($status, $stdout, $stderr) = $this->executeCommand($command);
 
