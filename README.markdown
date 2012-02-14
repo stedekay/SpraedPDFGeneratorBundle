@@ -49,7 +49,7 @@ Also you are able to set an download option (true/false), standard is false
 
 	$pdfGenerator->generatePDF($html, 'out.pdf', true);
 
-To define proper print css you might want to read into the w3.org's hints on that
+To define proper print css you might want to read into the w3.org's hints on that: [w3.org]
 [w3.org]: http://www.w3.org/TR/css3-page/
 [flyingsaucer]: http://code.google.com/p/flying-saucer/
 [spraed]: http://www.spraed.com
