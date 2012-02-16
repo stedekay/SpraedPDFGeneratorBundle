@@ -52,14 +52,15 @@ class PDFGenerator {
 
         list($status, $stdout, $stderr) = $this->executeCommand($command);
 
-        header('Content-Type: application/pdf');
         $disposition = 'inline';
         if ($downloadable) {
             $disposition = 'attachment';
         }
-        header('Content-Disposition: ' . $disposition . '; filename="' . $pdfFileName . '.pdf"');
+        header('Content-Disposition:' . $disposition . '; filename="' . $pdfFileName . '.pdf"');
+        header('Content-Type: application/pdf');
         // generate output
         @readfile($pdfFile);
+        die();
         // remove temporary file from hdd
         unlink($pdfFile);
     }
