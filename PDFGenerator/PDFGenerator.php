@@ -9,21 +9,16 @@ class PDFGenerator {
      * @param type $pdfFile - name of the pdf file
      * @param type $downloadable - offer pdf as download or open in new browser tab
      */
-    public function generatePDF($html, $encoding, $pdfFile = null, $downloadable = false) {
+    public function generatePDF($html, $encoding) {
 
-        if ($pdfFile === null) {
-            $pdfFile = 'out';
-        }
-
-        $pdfFileName = $pdfFile;
-
-        $pdfFile = $this->createTemporaryFile($pdfFile, 'pdf');
+        $pdfFile = $this->createTemporaryFile('out', 'pdf');
         $htmlFile = $this->createTemporaryFile('pdf_html', 'html', $html);
 
-        $result = $this->generate($htmlFile, $encoding, $pdfFile, $pdfFileName, $downloadable);
+        $result = $this->generate($htmlFile, $encoding, $pdfFile);
 
         // remove temporary file from hdd
         unlink($htmlFile);
+        return $result;
     }
 
     /**
@@ -46,23 +41,17 @@ class PDFGenerator {
      * @param type $pdfFileName -  filename of the pdf
      * @param type $downloadable - offer pdf as download or open in new browser tab
      */
-    public function generate($htmlFile, $encoding, $pdfFile, $pdfFileName, $downloadable) {
+    public function generate($htmlFile, $encoding, $pdfFile) {
 
         $command = $this->buildCommand($htmlFile, $encoding, $pdfFile);
 
         list($status, $stdout, $stderr) = $this->executeCommand($command);
 
-        $disposition = 'inline';
-        if ($downloadable) {
-            $disposition = 'attachment';
-        }
-        header('Content-Disposition:' . $disposition . '; filename="' . $pdfFileName . '.pdf"');
-        header('Content-Type: application/pdf');
-        // generate output
-        @readfile($pdfFile);
-        die();
-        // remove temporary file from hdd
+        //TODO Check state, out, and err
+
+        $pdf = file_get_contents($pdfFile);
         unlink($pdfFile);
+        return $pdf;
     }
 
     /**
