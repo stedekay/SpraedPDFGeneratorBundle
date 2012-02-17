@@ -21,9 +21,6 @@ class PDFGenerator {
         $htmlFile = $this->createTemporaryFile('pdf_html', 'html', $html);
 
         $result = $this->generate($htmlFile, $encoding, $pdfFile, $pdfFileName, $downloadable);
-
-        // remove temporary file from hdd
-        unlink($htmlFile);
     }
 
     /**
@@ -60,9 +57,13 @@ class PDFGenerator {
         header('Content-Type: application/pdf');
         // generate output
         @readfile($pdfFile);
-        die();
+        
+        // remove temporary file from hdd
+        unlink($htmlFile);
         // remove temporary file from hdd
         unlink($pdfFile);
+        
+        die();
     }
 
     /**
