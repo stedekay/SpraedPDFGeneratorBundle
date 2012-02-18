@@ -1,8 +1,18 @@
 SpraedPDFGeneratorBundle
 ===============
 
-SpraedPDFGeneratorBundle generates XHTML documents to PDF including header and footer.
-It works with a little jar library based on the [Flying Saucer project][flyingsaucer]
+SpraedPDFGeneratorBundle generates HTML documents to PDF. 
+The bundle gives you the chance to add a page header and footer very easily 
+(which can be disabled/switched on the first page).
+
+It works with a little jar library based on the [Flying Saucer project][flyingsaucer].
+So you need to run Java on your server.
+
+ToDo
+----
+
+- Writing tests
+- Check for possibilities to use SVG files in HTML
 
 Installation
 ------------
@@ -45,16 +55,16 @@ with the XHTML and the url of the PDF:
 	$html = $this->renderView('AcmeDemoBundle:Default:index.html.twig');
 	$pdfGenerator = $this->get('spraed.pdf.generator');
 
-Also you are able to set an encoding option.
+Also you are able to set an encoding option (you can leave the second parameter, it defaults to UTF-8):
 
 	$pdfGenerator->generatePDF($html, 'UTF-8');
 
-Anything else will be handled by the "new Response()" object in the controller, i.e.:
+Anything else will be handled by the Response object in the controller, i.e.:
 
         $html = $this->renderView('ACMEYourBundle:Print:print.html.twig');
         $pdfGenerator = $this->get('spraed.pdf.generator');
 
-        return new Response($pdfGenerator->generatePDF($html, 'UTF-8'),
+        return new Response($pdfGenerator->generatePDF($html),
                         200,
                         array(
                             'Content-Type' => 'application/pdf',
@@ -63,6 +73,7 @@ Anything else will be handled by the "new Response()" object in the controller, 
         );
 
 If you wish the pdf to be offered as a download, simply change 'inline' in 'Content-Disposition' to 'attachment';
+Make sure that all assets in your HTML are linked with absolute paths, because the HTML is copied into a tmp folder on the server.
 
 To define proper print css you might want to read into the w3.org's hints on that: [w3.org]
 [w3.org]: http://www.w3.org/TR/css3-page/
