@@ -72,7 +72,8 @@ Anything else will be handled by the Response object in the controller, i.e.:
                         )
         );
 
-If you wish the pdf to be offered as a download, simply change 'inline' in 'Content-Disposition' to 'attachment';
+If you wish the pdf to be offered as a download, simply change 'inline' in 'Content-Disposition' to 'attachment'.
+
 Make sure that all assets in your HTML are linked with absolute paths, because the HTML is copied into a tmp folder on the server.
 
 To define proper print css you might want to read into the w3.org's hints on that: [w3.org]
