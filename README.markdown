@@ -11,6 +11,7 @@ So you need to run Java on your server.
 ToDo
 ----
 
+- Write a little example how to enable header and footer
 - Writing tests
 - Check for possibilities to use SVG files in HTML
 
