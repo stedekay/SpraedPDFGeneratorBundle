@@ -10,15 +10,31 @@ class PDFGenerator {
 	 */
 	public function generatePDF($html, $encoding = 'UTF-8') {
 
-		$pdfFile = $this->createTemporaryFile('output', 'pdf');
-		$htmlFile = $this->createTemporaryFile('pdf_html', 'html', $html);
-
-		$result = $this->generate($htmlFile, $encoding, $pdfFile);
-
-		// remove temporary file
-		unlink($htmlFile);
-		return $result;
+		return $this->generatePDFs(array($html), $encoding);
 	}
+
+    /**
+     * @param type $html - html to generate the pdf from
+     * @param type $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     */
+    public function generatePDFs($htmls, $encoding = 'UTF-8') {
+
+        $pdfFile = $this->createTemporaryFile('output', 'pdf');
+
+        $htmlFiles = array();
+        foreach($htmls as $html){
+            $htmlFiles[] = $this->createTemporaryFile('pdf_html', 'html', $html);
+        }
+
+        $result = $this->generate($htmlFiles, $encoding, $pdfFile);
+
+        // remove temporary file
+        foreach($htmlFiles as $htmlFile){
+            unlink($htmlFile);
+        }
+
+        return $result;
+    }
 
 	/**
 	 * @param type $htmlFile - the temporary html file the pdf is generated from
@@ -26,9 +42,9 @@ class PDFGenerator {
 	 * @param type $pdfFile - the temporaray pdf file which the stream will be written to
 	 * @return pdf
 	 */
-	public function generate($htmlFile, $encoding, $pdfFile) {
+	public function generate($htmlFiles, $encoding, $pdfFile) {
 
-		$command = $this->buildCommand($htmlFile, $encoding, $pdfFile);
+		$command = $this->buildCommand($htmlFiles, $encoding, $pdfFile);
 
 		list($status, $stdout, $stderr) = $this->executeCommand($command);
 
@@ -45,7 +61,10 @@ class PDFGenerator {
 	 * @param type $pdfFile - the temporaray pdf file which the stream will be written to
 	 * @return command
 	 */
-	private function buildCommand($htmlFile, $encoding, $pdfFile) {
+	private function buildCommand($htmlFiles, $encoding, $pdfFile) {
+
+        $htmlFile = implode(', ', $htmlFiles);
+
 		$command = 'java -jar ';
 		$command .= '"' . __DIR__
 				. '/../Resources/java/spraed-pdf-generator.jar"';
