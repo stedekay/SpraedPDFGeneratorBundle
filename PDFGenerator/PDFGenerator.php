@@ -14,7 +14,7 @@ class PDFGenerator {
 	}
 
     /**
-     * @param type $html - html to generate the pdf from
+     * @param type $htmls - html array to generate the pdf from
      * @param type $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
      */
     public function generatePDFs($htmls, $encoding = 'UTF-8') {

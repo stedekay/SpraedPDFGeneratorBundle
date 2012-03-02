@@ -77,6 +77,25 @@ If you wish the pdf to be offered as a download, simply change 'inline' in 'Cont
 
 Make sure that all assets in your HTML are linked with absolute paths, because the HTML is copied into a tmp folder on the server.
 
+You are also capable of printing multiple pdfs in one stack. Saying you generate multiple documents from multiple html files and you want to
+output those in on huge pdf file, there is the 'generatePDFs' method which takes an array of rendered html Views and sticks those together:
+
+        $twigs[0] = 'SpraedSomethingBundle:Print:print_pdf_one.html.twig'
+        $twigs[1] = 'SpraedSomethingBundle:Print:print_pdf_two.html.twig'
+
+        $htmlCollection = array();
+        foreach($twigs as $twig){
+                $htmlCollection[] = $this->renderView($twig);
+        }
+
+        return new Response($pdfGenerator->generatePDFs($htmlCollection, 'UTF-8'),
+            200,
+            array(
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="out.pdf"'
+            )
+        );
+
 To define proper print css you might want to read into the w3.org's hints on that: [w3.org]
 [w3.org]: http://www.w3.org/TR/css3-page/
 [flyingsaucer]: http://code.google.com/p/flying-saucer/
