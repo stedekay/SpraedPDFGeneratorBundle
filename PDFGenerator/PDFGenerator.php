@@ -5,8 +5,8 @@ namespace Spraed\PDFGeneratorBundle\PDFGenerator;
 class PDFGenerator {
 
 	/**
-	 * @param type $html - html to generate the pdf from
-	 * @param type $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+	 * @param String $html - html to generate the pdf from
+	 * @param String $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
 	 */
 	public function generatePDF($html, $encoding = 'UTF-8') {
 
@@ -14,21 +14,29 @@ class PDFGenerator {
 	}
 
     /**
-     * @param type $htmls - html array to generate the pdf from
-     * @param type $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @param array $htmls - html array to generate the pdfs from
+     * @param String $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
      */
     public function generatePDFs($htmls, $encoding = 'UTF-8') {
 
+        // check if the first parameter is an array, throw exception otherwise
+        if(!is_array($htmls)) {
+            throw new \InvalidArgumentException('Parameter $htmls must be an array.');
+        }
+
+        // create temporary pdf output file
         $pdfFile = $this->createTemporaryFile('output', 'pdf');
 
+        // create temporary html files
         $htmlFiles = array();
         foreach($htmls as $html){
             $htmlFiles[] = $this->createTemporaryFile('pdf_html', 'html', $html);
         }
 
+        // generate the pdf
         $result = $this->generate($htmlFiles, $encoding, $pdfFile);
 
-        // remove temporary file
+        // remove temporary files
         foreach($htmlFiles as $htmlFile){
             unlink($htmlFile);
         }
@@ -37,13 +45,14 @@ class PDFGenerator {
     }
 
 	/**
-	 * @param type $htmlFile - the temporary html file the pdf is generated from
-	 * @param type $encoding - set the html (input) and pdf (output) encoding
+	 * @param array $htmlFiles - the temporary html files the pdf is generated from
+	 * @param String $encoding - set the html (input) and pdf (output) encoding
 	 * @param type $pdfFile - the temporaray pdf file which the stream will be written to
-	 * @return pdf
+	 * @return type
 	 */
 	public function generate($htmlFiles, $encoding, $pdfFile) {
 
+        // build command to call the pdf library
 		$command = $this->buildCommand($htmlFiles, $encoding, $pdfFile);
 
 		list($status, $stdout, $stderr) = $this->executeCommand($command);
@@ -56,8 +65,8 @@ class PDFGenerator {
 	}
 
 	/**
-	 * @param type $htmlFile - the temporary html file the pdf is generated from
-	 * @param type $encoding - set the html (input) and pdf (output) encoding
+	 * @param array $htmlFiles - the temporary html file the pdf is generated from
+	 * @param String $encoding - set the html (input) and pdf (output) encoding
 	 * @param type $pdfFile - the temporaray pdf file which the stream will be written to
 	 * @return command
 	 */
