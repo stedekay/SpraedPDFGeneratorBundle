@@ -1,4 +1,10 @@
+#Eclipse
 .settings
 .buildpath
 .project
+
+# Netbeans
 /nbproject
+
+#PHPStorm
+/.idea
