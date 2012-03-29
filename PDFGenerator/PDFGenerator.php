@@ -74,7 +74,7 @@ class PDFGenerator
     {
         $htmlFile = implode(', ', $htmlFiles);
 
-        $command = 'java -jar ';
+        $command = 'java -Djava.awt.headless=true -jar ';
         $command .= '"' . __DIR__
             . '/../Resources/java/spraed-pdf-generator.jar"';
         $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
