@@ -146,7 +146,7 @@ class PDFGenerator
      */
     private function checkStatus($status, $stdout, $stderr, $command)
     {
-        if (0 !== $status and '' !== $stderr) {
+        if (0 !== $status) {
             throw new \RuntimeException(sprintf(
                 'The exit status code \'%s\' says something went wrong:' . "\n"
                     . 'stderr: "%s"' . "\n"
