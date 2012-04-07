@@ -12,7 +12,7 @@ ToDo
 ----
 
 - Write a little example how to enable header and footer
-- Writing tests
+- Writing tests (test frame available for UnitTests, Travis CI support is missing)
 - Check for possibilities to use SVG files in HTML
 
 Installation
