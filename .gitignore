@@ -3,8 +3,13 @@
 .buildpath
 .project
 
-# Netbeans
+#Netbeans
 /nbproject
 
 #PHPStorm
 /.idea
+
+#Tests
+/phpunit.xml
+/Tests/autoload.php
+/vendor/symfony
