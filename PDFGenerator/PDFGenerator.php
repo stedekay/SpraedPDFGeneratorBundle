@@ -89,6 +89,7 @@ class PDFGenerator
     public function executeCommand($command)
     {
         $stdout = $stderr = $status = null;
+        $pipes = array();
         $descriptorspec = array(
             // stdout is a pipe that the child will write to
             1 => array('pipe', 'w'),
