@@ -20,19 +20,32 @@ ToDo
 Installation
 ------------
 
-*If your are using git and manages your vendors as submodules, use the following commands to add this bundle to your Symfony project.*
+Option 1: Use composer
+
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/symfony": "2.1.*",
+
+        ... (your packages) ...
+
+        "spraed/pdf-generator-bundle": "dev-master",
+    }
+
+Option 2: Use git submodules
 
 Copy the SpraedPDFGeneratorBundle into the `vendor/bundles/Spraed/PDFGeneratorBundle` directory:
 
     git submodule add https://github.com/stedekay/SpraedPDFGeneratorBundle.git vendor/bundles/Spraed/PDFGeneratorBundle
 
-Or use deps file:
+Option 3: Use deps file
 
     [SpraedPDFGeneratorBundle]
         git=https://github.com/stedekay/SpraedPDFGeneratorBundle.git
         target=/bundles/Spraed/PDFGeneratorBundle
 
-Register the source directory in your autoloader:
+
+Register the Spraed namespace:
+-------------------------------------------------
 
     $loader->registerNamespaces(array(
         ...
