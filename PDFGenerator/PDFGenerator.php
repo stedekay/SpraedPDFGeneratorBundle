@@ -29,32 +29,38 @@ class PDFGenerator
         $pdfFile = $this->createTemporaryFile('output', 'pdf');
 
         // create temporary html files
+        $htmlFile = $this->createTemporaryFile('tmp', '');
+
         $htmlFiles = array();
         foreach ($htmls as $html) {
-            $htmlFiles[] = $this->createTemporaryFile('pdf_html', 'html', $html);
+            $filename = $this->createTemporaryFile('pdf_html', 'html', $html);
+            $htmlFiles[] = $filename;
+
+            file_put_contents($htmlFile, $filename . '\n');
         }
 
         // generate the pdf
-        $result = $this->generate($htmlFiles, $encoding, $pdfFile);
+        $result = $this->generate($htmlFile, $encoding, $pdfFile);
 
         // remove temporary files
         foreach ($htmlFiles as $htmlFile) {
             unlink($htmlFile);
         }
+        unlink($htmlFile);
 
         return $result;
     }
 
     /**
-     * @param array $htmlFiles - the temporary html files the pdf is generated from
+     * @param $htmlFile - the temporary html files the pdf is generated from
      * @param String $encoding - set the html (input) and pdf (output) encoding
      * @param type $pdfFile - the temporaray pdf file which the stream will be written to
      * @return type
      */
-    public function generate($htmlFiles, $encoding, $pdfFile)
+    public function generate($htmlFile, $encoding, $pdfFile)
     {
         // build command to call the pdf library
-        $command = $this->buildCommand($htmlFiles, $encoding, $pdfFile);
+        $command = $this->buildCommand($htmlFile, $encoding, $pdfFile);
 
         list($status, $stdout, $stderr) = $this->executeCommand($command);
         $this->checkStatus($status, $stdout, $stderr, $command);
@@ -65,15 +71,13 @@ class PDFGenerator
     }
 
     /**
-     * @param array $htmlFiles - the temporary html file the pdf is generated from
+     * @param $htmlFile - the temporary html file the pdf is generated from
      * @param String $encoding - set the html (input) and pdf (output) encoding
      * @param type $pdfFile - the temporaray pdf file which the stream will be written to
      * @return command
      */
-    private function buildCommand($htmlFiles, $encoding, $pdfFile)
+    private function buildCommand($htmlFile, $encoding, $pdfFile)
     {
-        $htmlFile = implode(', ', $htmlFiles);
-
         $command = 'java -Djava.awt.headless=true -jar ';
         $command .= '"' . __DIR__
             . '/../Resources/java/spraed-pdf-generator.jar"';
@@ -119,10 +123,10 @@ class PDFGenerator
     }
 
     /**
-     * @param type $filename - filename of the pdf
-     * @param type $extension - extension of file
-     * @param type $content - content to be put in generated file
-     * @return file
+     * @param string $filename - filename of the pdf
+     * @param string $extension - extension of file
+     * @param mixed $content - content to be put in generated file
+     * @return string
      */
     private function createTemporaryFile($filename, $extension, $content = null)
     {
@@ -143,7 +147,7 @@ class PDFGenerator
      * @param  string $stderr   The stderr content
      * @param  string $command  The run command
      *
-     * @throws RuntimeException if the output file generation failed
+     * @throws \RuntimeException if the output file generation failed
      */
     private function checkStatus($status, $stdout, $stderr, $command)
     {
