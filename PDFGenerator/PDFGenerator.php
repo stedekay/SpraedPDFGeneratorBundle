@@ -43,8 +43,8 @@ class PDFGenerator
         $result = $this->generate($htmlFile, $encoding, $pdfFile);
 
         // remove temporary files
-        foreach ($htmlFiles as $htmlFile) {
-            unlink($htmlFile);
+        foreach ($htmlFiles as $files) {
+            unlink($files);
         }
         unlink($htmlFile);
 
