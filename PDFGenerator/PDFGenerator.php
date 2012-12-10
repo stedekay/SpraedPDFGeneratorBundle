@@ -36,7 +36,7 @@ class PDFGenerator
             $filename = $this->createTemporaryFile('pdf_html', 'html', $html);
             $htmlFiles[] = $filename;
 
-            file_put_contents($htmlFile, $filename . '\n');
+            file_put_contents($htmlFile, $filename . "\n");
         }
 
         // generate the pdf
