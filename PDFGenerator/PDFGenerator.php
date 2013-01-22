@@ -33,7 +33,7 @@ class PDFGenerator
 
         $htmlFiles = array();
         foreach ($htmls as $html) {
-            $filename = $this->createTemporaryFile('pdf_html', 'html', $html);
+            $filename = $this->createTemporaryFile('pdf_html', 'txt', $html);
             $htmlFiles[] = $filename;
 
             file_put_contents($htmlFile, $filename . PHP_EOL, FILE_APPEND);
