@@ -6,7 +6,7 @@ The bundle gives you the chance to add a page header and footer very easily
 (which can be disabled/switched on the first page).
 
 It works with a little jar library based on the [Flying Saucer project][flyingsaucer].
-So you need to run Java on your server.
+So you need to run Java on your server (Java 6 or higher).
 
 [![Build Status](https://secure.travis-ci.org/stedekay/SpraedPDFGeneratorBundle.png)](http://travis-ci.org/stedekay/SpraedPDFGeneratorBundle)
 
