@@ -6,8 +6,9 @@ class PDFGenerator
 {
 
     /**
-     * @param String $html - html to generate the pdf from
-     * @param String $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @param string $html - html to generate the pdf from
+     * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @return string
      */
     public function generatePDF($html, $encoding = 'UTF-8')
     {
@@ -16,7 +17,8 @@ class PDFGenerator
 
     /**
      * @param array $htmls - html array to generate the pdfs from
-     * @param String $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @return string
      */
     public function generatePDFs($htmls, $encoding = 'UTF-8')
     {
@@ -53,9 +55,9 @@ class PDFGenerator
 
     /**
      * @param $htmlFile - the temporary html files the pdf is generated from
-     * @param String $encoding - set the html (input) and pdf (output) encoding
-     * @param type $pdfFile - the temporaray pdf file which the stream will be written to
-     * @return type
+     * @param string $encoding - set the html (input) and pdf (output) encoding
+     * @param string $pdfFile - the temporaray pdf file which the stream will be written to
+     * @return string
      */
     public function generate($htmlFile, $encoding, $pdfFile)
     {
@@ -72,9 +74,9 @@ class PDFGenerator
 
     /**
      * @param $htmlFile - the temporary html file the pdf is generated from
-     * @param String $encoding - set the html (input) and pdf (output) encoding
-     * @param type $pdfFile - the temporaray pdf file which the stream will be written to
-     * @return command
+     * @param string $encoding - set the html (input) and pdf (output) encoding
+     * @param string $pdfFile - the temporaray pdf file which the stream will be written to
+     * @return string
      */
     private function buildCommand($htmlFile, $encoding, $pdfFile)
     {
@@ -88,7 +90,8 @@ class PDFGenerator
     }
 
     /**
-     * @param type $command - the command which will be executed to generate the pdf
+     * @param string $command - the command which will be executed to generate the pdf
+     * @return array
      */
     public function executeCommand($command)
     {
