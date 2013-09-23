@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit colors="true" bootstrap="./Tests/bootstrap.php">
     <php>
-        <!-- <server name="SYMFONY" value="/path/to/symfony/src" /> -->
+         <server name="KERNEL_DIR" value="Tests/App" />
     </php>
     <testsuites>
         <testsuite name="PDFGeneratorBundle Test Suite">
