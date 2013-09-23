@@ -4,7 +4,6 @@ namespace Spraed\PDFGeneratorBundle\Tests;
 
 use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Tests\Functional\AppKernel;
 use Symfony\Component\HttpFoundation\Response;
 
 class FunctionalTest extends WebTestCase
@@ -19,7 +18,9 @@ class FunctionalTest extends WebTestCase
 
     public function testCreateTemporaryFile()
     {
-        $pdfGenerator = new PDFGenerator(self::$kernel);
+        $client = static::createClient();
+        $kernel = $client->getKernel();
+        $pdfGenerator = new PDFGenerator($kernel);
         $pdf = $pdfGenerator->generatePDF(__DIR__ . '/Resources/test-without-resource-links.html');
 
         $response = new Response($pdf,
