@@ -2,8 +2,18 @@
 
 namespace Spraed\PDFGeneratorBundle\PDFGenerator;
 
+use Symfony\Component\HttpKernel\KernelInterface;
+
 class PDFGenerator
 {
+
+    private $kernel;
+
+    function __construct(KernelInterface $kernel)
+    {
+        $this->kernel = $kernel;
+    }
+
 
     /**
      * @param string $html - html to generate the pdf from
@@ -80,9 +90,16 @@ class PDFGenerator
      */
     private function buildCommand($htmlFile, $encoding, $pdfFile)
     {
+        $resource = '@SpraedPDFGeneratorBundle/Resources/java/spraed-pdf-generator.jar';
+
+        try {
+            $path = $this->kernel->locateResource($resource);
+        } catch(\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException(sprintf('Unable to load "%s"', $resource), 0, $e);
+        }
+
         $command = 'java -Djava.awt.headless=true -jar ';
-        $command .= '"' . __DIR__
-            . '/../Resources/java/spraed-pdf-generator.jar"';
+        $command .= '"' . $path . '"';
         $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
         $command .= ' --encoding ' . $encoding;
 
@@ -145,7 +162,7 @@ class PDFGenerator
 
     /**
      *
-     * @param  int   $status    The exit status code
+     * @param  int $status    The exit status code
      * @param  string $stdout   The stdout content
      * @param  string $stderr   The stderr content
      * @param  string $command  The run command
@@ -157,9 +174,9 @@ class PDFGenerator
         if (0 !== $status) {
             throw new \RuntimeException(sprintf(
                 'The exit status code \'%s\' says something went wrong:' . "\n"
-                    . 'stderr: "%s"' . "\n"
-                    . 'stdout: "%s"' . "\n"
-                    . 'command: %s.',
+                . 'stderr: "%s"' . "\n"
+                . 'stdout: "%s"' . "\n"
+                . 'command: %s.',
                 $status, $stderr, $stdout, $command
             ));
         }

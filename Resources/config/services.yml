@@ -1,5 +1,6 @@
 services:
   spraed.pdf.generator:
-    class: Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator  
+    class: Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator
+    arguments: ["@kernel"]
   
   
