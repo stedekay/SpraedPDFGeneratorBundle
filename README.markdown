@@ -6,7 +6,7 @@ The bundle gives you the chance to add a page header and footer very easily
 (which can be disabled/switched on the first page).
 
 It works with a little jar library based on the [Flying Saucer project][flyingsaucer].
-So you need to run Java on your server (Java 6 or higher).
+So you need to run Java on your server (Java 6 or later).
 
 <!-- [![Build Status](https://secure.travis-ci.org/stedekay/SpraedPDFGeneratorBundle.png)](http://travis-ci.org/stedekay/SpraedPDFGeneratorBundle) -->
 [![Total Downloads](https://poser.pugx.org/spraed/pdf-generator-bundle/downloads.png)](https://packagist.org/packages/spraed/pdf-generator-bundle) [![Latest Stable Version](https://poser.pugx.org/spraed/pdf-generator-bundle/v/stable.png)](https://packagist.org/packages/spraed/pdf-generator-bundle)
@@ -29,7 +29,7 @@ Option 1: Use composer
 
         ... (your packages) ...
 
-        "spraed/pdf-generator-bundle": "dev-master",
+        "spraed/pdf-generator-bundle": "v1.0",
     }
 
 Option 2: Use git submodules
