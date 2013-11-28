@@ -91,7 +91,9 @@ Anything else will be handled by the Response object in the controller, i.e.:
 
 If you wish the pdf to be offered as a download, simply change 'inline' in 'Content-Disposition' to 'attachment'.
 
-Make sure that all assets in your HTML are linked with absolute paths, because the HTML is copied into a tmp folder on the server.
+Make sure that all assets in your HTML are linked with absolute paths, because the HTML is copied into a tmp folder on the server. If you want to add an image to your twig it should look something like this:
+
+        {{ app.request.scheme ~'://' ~ app.request.httpHost ~ asset('images/foo.jpg') }}
 
 You are also capable of printing multiple pdfs in one stack. Saying you generate multiple documents from multiple html files and you want to
 output those in on huge pdf file, there is the 'generatePDFs' method which takes an array of rendered html Views and sticks those together:
