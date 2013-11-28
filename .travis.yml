@@ -9,4 +9,4 @@ env:
   - SYMFONY_VERSION=origin/master
 
 before_script:
-  - composer install
+  - composer require symfony/symfony:${SYMFONY_VERSION}
