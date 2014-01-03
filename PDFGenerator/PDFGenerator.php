@@ -8,19 +8,21 @@ class PDFGenerator
     /**
      * @param string $html - html to generate the pdf from
      * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    public function generatePDF($html, $encoding = 'UTF-8')
+    public function generatePDF($html, $encoding = 'UTF-8', array $fontPaths = array())
     {
-        return $this->generatePDFs(array($html), $encoding);
+        return $this->generatePDFs(array($html), $encoding, $fontPaths);
     }
 
     /**
      * @param array $htmls - html array to generate the pdfs from
      * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
+     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    public function generatePDFs($htmls, $encoding = 'UTF-8')
+    public function generatePDFs($htmls, $encoding = 'UTF-8', array $fontPaths = array())
     {
         // check if the first parameter is an array, throw exception otherwise
         if (!is_array($htmls)) {
@@ -42,7 +44,7 @@ class PDFGenerator
         }
 
         // generate the pdf
-        $result = $this->generate($htmlFile, $encoding, $pdfFile);
+        $result = $this->generate($htmlFile, $encoding, $pdfFile, $fontPaths);
 
         // remove temporary files
         foreach ($htmlFiles as $files) {
@@ -57,12 +59,13 @@ class PDFGenerator
      * @param $htmlFile - the temporary html files the pdf is generated from
      * @param string $encoding - set the html (input) and pdf (output) encoding
      * @param string $pdfFile - the temporaray pdf file which the stream will be written to
+     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    public function generate($htmlFile, $encoding, $pdfFile)
+    public function generate($htmlFile, $encoding, $pdfFile, array $fontPaths = array())
     {
         // build command to call the pdf library
-        $command = $this->buildCommand($htmlFile, $encoding, $pdfFile);
+        $command = $this->buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths);
 
         list($status, $stdout, $stderr) = $this->executeCommand($command);
         $this->checkStatus($status, $stdout, $stderr, $command);
@@ -76,15 +79,20 @@ class PDFGenerator
      * @param $htmlFile - the temporary html file the pdf is generated from
      * @param string $encoding - set the html (input) and pdf (output) encoding
      * @param string $pdfFile - the temporaray pdf file which the stream will be written to
+     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    private function buildCommand($htmlFile, $encoding, $pdfFile)
+    private function buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths)
     {
         $command = 'java -Djava.awt.headless=true -jar ';
         $command .= '"' . __DIR__
             . '/../Resources/java/spraed-pdf-generator.jar"';
         $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
         $command .= ' --encoding ' . $encoding;
+
+        if (!empty($fontPaths)) {
+            $command .= ' --fontPaths ' . implode(',', $fontPaths);
+        }
 
         return $command;
     }
