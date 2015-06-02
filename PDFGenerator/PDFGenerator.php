@@ -1,6 +1,9 @@
 <?php
+
 namespace Spraed\PDFGeneratorBundle\PDFGenerator;
+
 use Symfony\Component\HttpKernel\KernelInterface;
+
 class PDFGenerator
 {
     private $kernel;
@@ -11,6 +14,7 @@ class PDFGenerator
         $this->kernel = $kernel;
         $this->options = $options;
     }
+
     /**
      * @param string $html - html to generate the pdf from
      * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
@@ -21,6 +25,7 @@ class PDFGenerator
     {
         return $this->generatePDFs(array($html), $encoding, $fontPaths);
     }
+
     /**
      * @param array $htmls - html array to generate the pdfs from
      * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
@@ -52,6 +57,7 @@ class PDFGenerator
         unlink($htmlFile);
         return $result;
     }
+
     /**
      * @param $htmlFile - the temporary html files the pdf is generated from
      * @param string $encoding - set the html (input) and pdf (output) encoding
@@ -69,6 +75,7 @@ class PDFGenerator
         unlink($pdfFile);
         return $pdf;
     }
+
     /**
      * @param $htmlFile - the temporary html file the pdf is generated from
      * @param string $encoding - set the html (input) and pdf (output) encoding
@@ -99,6 +106,7 @@ class PDFGenerator
         }
         return $command;
     }
+
     /**
      * @param string $command - the command which will be executed to generate the pdf
      * @return array
@@ -128,6 +136,7 @@ class PDFGenerator
         }
         return array($status, $stdout, $stderr);
     }
+
     /**
      * @param string $filename - filename of the pdf
      * @param string $extension - extension of file
@@ -143,6 +152,7 @@ class PDFGenerator
         }
         return $file;
     }
+
     /**
      *
      * @param  int $status    The exit status code
