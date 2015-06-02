@@ -9,30 +9,31 @@ class PDFGenerator
 
     private $kernel;
 
-    function __construct(KernelInterface $kernel)
+    private $options;
+
+    function __construct(KernelInterface $kernel, $options)
     {
         $this->kernel = $kernel;
+        $this->options = $options;
     }
 
 
     /**
      * @param string $html - html to generate the pdf from
      * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
-     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    public function generatePDF($html, $encoding = 'UTF-8', array $fontPaths = array())
+    public function generatePDF($html, $encoding = 'UTF-8')
     {
-        return $this->generatePDFs(array($html), $encoding, $fontPaths);
+        return $this->generatePDFs(array($html), $encoding);
     }
 
     /**
      * @param array $htmls - html array to generate the pdfs from
      * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
-     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    public function generatePDFs($htmls, $encoding = 'UTF-8', array $fontPaths = array())
+    public function generatePDFs($htmls, $encoding = 'UTF-8')
     {
         // check if the first parameter is an array, throw exception otherwise
         if (!is_array($htmls)) {
@@ -54,7 +55,7 @@ class PDFGenerator
         }
 
         // generate the pdf
-        $result = $this->generate($htmlFile, $encoding, $pdfFile, $fontPaths);
+        $result = $this->generate($htmlFile, $encoding, $pdfFile);
 
         // remove temporary files
         foreach ($htmlFiles as $files) {
@@ -69,19 +70,19 @@ class PDFGenerator
      * @param $htmlFile - the temporary html files the pdf is generated from
      * @param string $encoding - set the html (input) and pdf (output) encoding
      * @param string $pdfFile - the temporaray pdf file which the stream will be written to
-     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    public function generate($htmlFile, $encoding, $pdfFile, array $fontPaths = array())
+    public function generate($htmlFile, $encoding, $pdfFile)
     {
         // build command to call the pdf library
-        $command = $this->buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths);
+        $command = $this->buildCommand($htmlFile, $encoding, $pdfFile);
 
         list($status, $stdout, $stderr) = $this->executeCommand($command);
         $this->checkStatus($status, $stdout, $stderr, $command);
 
         $pdf = file_get_contents($pdfFile);
         unlink($pdfFile);
+
         return $pdf;
     }
 
@@ -89,27 +90,29 @@ class PDFGenerator
      * @param $htmlFile - the temporary html file the pdf is generated from
      * @param string $encoding - set the html (input) and pdf (output) encoding
      * @param string $pdfFile - the temporaray pdf file which the stream will be written to
-     * @param array $fontPaths - paths to extra font files
      * @return string
      */
-    private function buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths)
+    private function buildCommand($htmlFile, $encoding, $pdfFile)
     {
         $resource = '@SpraedPDFGeneratorBundle/Resources/java/spraed-pdf-generator.jar';
 
         try {
             $path = $this->kernel->locateResource($resource);
-        } catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to load "%s"', $resource), 0, $e);
         }
 
-        $command = 'java -Djava.awt.headless=true -jar ';
+        $javaParams = $this->getOption('java');
+        if (!isset($javaParams['full_pathname'])) {
+            throw new \InvalidArgumentException(
+                sprintf('SpreadPDFGenerator not correctly configured: Unable to find java full pathname')
+            );
+        }
+
+        $command = $javaParams['full_pathname'] . ' -Djava.awt.headless=true -jar ';
         $command .= '"' . $path . '"';
         $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
         $command .= ' --encoding ' . $encoding;
-
-        if (!empty($fontPaths)) {
-            $command .= ' --fontPaths ' . implode(',', $fontPaths);
-        }
 
         return $command;
     }
@@ -126,7 +129,8 @@ class PDFGenerator
             // stdout is a pipe that the child will write to
             1 => array('pipe', 'w'),
             // stderr is a pipe that the child will write to
-            2 => array('pipe', 'w'));
+            2 => array('pipe', 'w')
+        );
 
         $process = proc_open($command, $descriptorspec, $pipes);
 
@@ -170,24 +174,42 @@ class PDFGenerator
 
     /**
      *
-     * @param  int $status    The exit status code
-     * @param  string $stdout   The stdout content
-     * @param  string $stderr   The stderr content
-     * @param  string $command  The run command
+     * @param  int $status The exit status code
+     * @param  string $stdout The stdout content
+     * @param  string $stderr The stderr content
+     * @param  string $command The run command
      *
      * @throws \RuntimeException if the output file generation failed
      */
     private function checkStatus($status, $stdout, $stderr, $command)
     {
         if (0 !== $status) {
-            throw new \RuntimeException(sprintf(
-                'The exit status code \'%s\' says something went wrong:' . "\n"
-                . 'stderr: "%s"' . "\n"
-                . 'stdout: "%s"' . "\n"
-                . 'command: %s.',
-                $status, $stderr, $stdout, $command
-            ));
+            throw new \RuntimeException(
+                sprintf(
+                    'The exit status code \'%s\' says something went wrong:' . "\n"
+                    . 'stderr: "%s"' . "\n"
+                    . 'stdout: "%s"' . "\n"
+                    . 'command: %s.',
+                    $status,
+                    $stderr,
+                    $stdout,
+                    $command
+                )
+            );
         }
     }
 
+    /**
+     *
+     * @param string $key key option
+     * @return mixed
+     */
+    private function getOption($key)
+    {
+        if (!isset($this->options[$key])) {
+            return null;
+        }
+
+        return $this->options[$key];
+    }
 }
