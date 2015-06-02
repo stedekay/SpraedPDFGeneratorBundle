@@ -6,6 +6,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class PDFGenerator
 {
+
     private $kernel;
     private $options;
 
@@ -14,6 +15,7 @@ class PDFGenerator
         $this->kernel = $kernel;
         $this->options = $options;
     }
+
 
     /**
      * @param string $html - html to generate the pdf from
@@ -38,23 +40,30 @@ class PDFGenerator
         if (!is_array($htmls)) {
             throw new \InvalidArgumentException('Parameter $htmls must be an array.');
         }
+
         // create temporary pdf output file
         $pdfFile = $this->createTemporaryFile('output', 'pdf');
+
         // create temporary html files
         $htmlFile = $this->createTemporaryFile('tmp', '');
+
         $htmlFiles = array();
         foreach ($htmls as $html) {
             $filename = $this->createTemporaryFile('pdf_html', 'txt', $html);
             $htmlFiles[] = $filename;
+
             file_put_contents($htmlFile, $filename . PHP_EOL, FILE_APPEND);
         }
+
         // generate the pdf
         $result = $this->generate($htmlFile, $encoding, $pdfFile, $fontPaths);
+
         // remove temporary files
         foreach ($htmlFiles as $files) {
             unlink($files);
         }
         unlink($htmlFile);
+
         return $result;
     }
 
@@ -69,8 +78,10 @@ class PDFGenerator
     {
         // build command to call the pdf library
         $command = $this->buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths);
+
         list($status, $stdout, $stderr) = $this->executeCommand($command);
         $this->checkStatus($status, $stdout, $stderr, $command);
+
         $pdf = file_get_contents($pdfFile);
         unlink($pdfFile);
         return $pdf;
@@ -86,24 +97,29 @@ class PDFGenerator
     private function buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths)
     {
         $resource = '@SpraedPDFGeneratorBundle/Resources/java/spraed-pdf-generator.jar';
+
         try {
             $path = $this->kernel->locateResource($resource);
         } catch(\InvalidArgumentException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to load "%s"', $resource), 0, $e);
         }
+
         $javaParams = $this->getOption('java');
         if (!isset($javaParams['full_pathname'])) {
             throw new \InvalidArgumentException(
                 sprintf('SpreadPDFGenerator not correctly configured: Unable to find java full pathname')
             );
         }
+
         $command = $javaParams['full_pathname'] . ' -Djava.awt.headless=true -jar ';
         $command .= '"' . $path . '"';
         $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
         $command .= ' --encoding ' . $encoding;
+
         if (!empty($fontPaths)) {
             $command .= ' --fontPaths ' . implode(',', $fontPaths);
         }
+
         return $command;
     }
 
@@ -120,20 +136,26 @@ class PDFGenerator
             1 => array('pipe', 'w'),
             // stderr is a pipe that the child will write to
             2 => array('pipe', 'w'));
+
         $process = proc_open($command, $descriptorspec, $pipes);
+
         if (is_resource($process)) {
             // $pipes now looks like this:
             // 0 => writeable handle connected to child stdin
             // 1 => readable handle connected to child stdout
             // 2 => readable handle connected to child stderr
+
             $stdout = stream_get_contents($pipes[1]);
             fclose($pipes[1]);
+
             $stderr = stream_get_contents($pipes[2]);
             fclose($pipes[2]);
+
             // It is important that you close any pipes before calling
             // proc_close in order to avoid a deadlock
             $status = proc_close($process);
         }
+
         return array($status, $stdout, $stderr);
     }
 
@@ -147,9 +169,11 @@ class PDFGenerator
     {
         $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid($filename)
             . '.' . $extension;
+
         if (null !== $content) {
             file_put_contents($file, $content);
         }
+
         return $file;
     }
 
