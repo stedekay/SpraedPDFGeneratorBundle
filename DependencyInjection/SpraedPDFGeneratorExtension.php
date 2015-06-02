@@ -26,6 +26,22 @@ class SpraedPDFGeneratorExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        
+        $config = array();
+        foreach ($configs as $subConfig) {
+            $config = array_merge($config, $subConfig);
+        }
+
+        if (!isset($config['java']) || !isset($config['java']['full_pathname'])) {
+            $config['java']['full_pathname'] = 'java';
+        }
+        $container->setParameter('spraed_pdf_generator', $config);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return 'spraed_pdf_generator';
     }
 }
