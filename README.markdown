@@ -116,5 +116,5 @@ output those in on huge pdf file, there is the 'generatePDFs' method which takes
 
 To define proper print css you might want to read into the w3.org's hints on that: [w3.org]
 [w3.org]: http://www.w3.org/TR/css3-page/
-[flyingsaucer]: http://code.google.com/p/flying-saucer/
+[flyingsaucer]: https://github.com/flyingsaucerproject/flyingsaucer
 [spraed]: http://www.spraed.com
