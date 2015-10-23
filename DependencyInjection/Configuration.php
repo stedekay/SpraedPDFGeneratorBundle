@@ -18,7 +18,6 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('spraed_pdf_generator');
 
         $rootNode = $treeBuilder->root('spraed_pdf_generator');
 
