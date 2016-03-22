@@ -9,7 +9,6 @@
 #PHPStorm
 /.idea
 
-#Tests
 /phpunit.xml
 /Tests/autoload.php
-/vendor/symfony
+/vendor/
