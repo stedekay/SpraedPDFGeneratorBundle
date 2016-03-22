@@ -18,11 +18,16 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('spraed_pdf_generator');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode = $treeBuilder->root('spraed_pdf_generator');
+
+        $rootNode->children()
+            ->arrayNode('java')
+            ->children()
+            ->scalarNode('full_pathname')->defaultValue('')->end()
+            ->end()
+            ->end() // java
+            ->end();
 
         return $treeBuilder;
     }

@@ -8,10 +8,12 @@ class PDFGenerator
 {
 
     private $kernel;
+    private $options;
 
-    function __construct(KernelInterface $kernel)
+    function __construct(KernelInterface $kernel, $options)
     {
         $this->kernel = $kernel;
+        $this->options = $options;
     }
 
 
@@ -102,7 +104,14 @@ class PDFGenerator
             throw new \InvalidArgumentException(sprintf('Unable to load "%s"', $resource), 0, $e);
         }
 
-        $command = 'java -Djava.awt.headless=true -jar ';
+        $javaParams = $this->getOption('java');
+        if (!isset($javaParams['full_pathname'])) {
+            throw new \InvalidArgumentException(
+                sprintf('SpreadPDFGenerator not correctly configured: Unable to find java full pathname')
+            );
+        }
+
+        $command = $javaParams['full_pathname'] . ' -Djava.awt.headless=true -jar ';
         $command .= '"' . $path . '"';
         $command .= ' --html "' . $htmlFile . '" --pdf "' . $pdfFile . '"';
         $command .= ' --encoding ' . $encoding;
@@ -190,4 +199,17 @@ class PDFGenerator
         }
     }
 
+    /**
+     *
+     * @param string $key key option
+     * @return mixed
+     */
+    private function getOption($key)
+    {
+        if (!isset($this->options[$key])) {
+            return null;
+        }
+
+        return $this->options[$key];
+    }
 }
