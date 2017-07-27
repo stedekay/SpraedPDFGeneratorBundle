@@ -100,7 +100,7 @@ class PDFGenerator
 
         try {
             $path = $this->kernel->locateResource($resource);
-        } catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             throw new \InvalidArgumentException(sprintf('Unable to load "%s"', $resource), 0, $e);
         }
 
@@ -167,8 +167,12 @@ class PDFGenerator
      */
     private function createTemporaryFile($filename, $extension, $content = null)
     {
-        $file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid($filename)
-            . '.' . $extension;
+        $extension = empty($extension) ?: '.' . $extension;
+        
+        $file = sys_get_temp_dir()
+            . DIRECTORY_SEPARATOR
+            . uniqid($filename)
+            . $extension;
 
         if (null !== $content) {
             file_put_contents($file, $content);
@@ -179,10 +183,10 @@ class PDFGenerator
 
     /**
      *
-     * @param  int $status    The exit status code
-     * @param  string $stdout   The stdout content
-     * @param  string $stderr   The stderr content
-     * @param  string $command  The run command
+     * @param  int $status The exit status code
+     * @param  string $stdout The stdout content
+     * @param  string $stderr The stderr content
+     * @param  string $command The run command
      *
      * @throws \RuntimeException if the output file generation failed
      */
