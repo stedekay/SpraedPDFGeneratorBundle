@@ -45,7 +45,7 @@ class PDFGenerator
         $pdfFile = $this->createTemporaryFile('output', 'pdf');
 
         // create temporary html files
-        $htmlFile = $this->createTemporaryFile('tmp', '');
+        $htmlFile = $this->createTemporaryFile('tmp', 'html');
 
         $htmlFiles = array();
         foreach ($htmls as $html) {
