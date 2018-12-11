@@ -1,5 +1,8 @@
 services:
+  Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator: "@spraed.pdf.generator"
+    public: false
   spraed.pdf.generator:
     class: Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator
     arguments: ["@kernel", "%spraed_pdf_generator%"]
+    public: true
   
