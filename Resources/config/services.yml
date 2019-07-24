@@ -1,6 +1,6 @@
 services:
   Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator:
-    alias: "@spraed.pdf.generator"
+    alias: "spraed.pdf.generator"
     public: false
   spraed.pdf.generator:
     class: Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator
