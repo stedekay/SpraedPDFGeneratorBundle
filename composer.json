@@ -19,7 +19,7 @@
 
     "require": {
         "php":                      "^7.2",
-        "symfony/framework-bundle": "^3.4.26"
+        "symfony/framework-bundle": "^4.0|^5.0"
     },
 
     "autoload": {
