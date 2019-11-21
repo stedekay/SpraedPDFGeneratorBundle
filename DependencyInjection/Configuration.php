@@ -17,11 +17,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder('spraed_pdf_generator');
 
-        $rootNode = $treeBuilder->root('spraed_pdf_generator');
-
-        $rootNode->children()
+        $treeBuilder->getRootNode()
+            ->children()
             ->arrayNode('java')
             ->children()
             ->scalarNode('full_pathname')->defaultValue('')->end()
