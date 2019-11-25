@@ -4,5 +4,5 @@ services:
     public: false
   spraed.pdf.generator:
     class: Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator
-    arguments: ["@kernel", "%spraed_pdf_generator%"]
+    arguments: ["%spraed_pdf_generator%"]
     public: true

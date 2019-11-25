@@ -2,43 +2,31 @@
 
 namespace Spraed\PDFGeneratorBundle\PDFGenerator;
 
-use Symfony\Component\HttpKernel\KernelInterface;
+use InvalidArgumentException;
+use RuntimeException;
 
-class PDFGenerator
+final class PDFGenerator
 {
-
-    private $kernel;
+    /**
+     * @var array
+     */
     private $options;
 
-    function __construct(KernelInterface $kernel, $options)
+    public function __construct($options)
     {
-        $this->kernel = $kernel;
         $this->options = $options;
     }
 
-
-    /**
-     * @param string $html - html to generate the pdf from
-     * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
-     * @param array $fontPaths - paths to extra font files
-     * @return string
-     */
-    public function generatePDF($html, $encoding = 'UTF-8', array $fontPaths = array())
+    public function generatePDF(string $html, string $encoding = 'UTF-8', array $fontPaths = []): string
     {
-        return $this->generatePDFs(array($html), $encoding, $fontPaths);
+        return $this->generatePDFs([$html], $encoding, $fontPaths);
     }
 
-    /**
-     * @param array $htmls - html array to generate the pdfs from
-     * @param string $encoding - set the html (input) and pdf (output) encoding, defaults to UTF-8
-     * @param array $fontPaths - paths to extra font files
-     * @return string
-     */
-    public function generatePDFs($htmls, $encoding = 'UTF-8', array $fontPaths = array())
+    public function generatePDFs(array $htmls, string $encoding = 'UTF-8', array $fontPaths = []): string
     {
         // check if the first parameter is an array, throw exception otherwise
         if (!is_array($htmls)) {
-            throw new \InvalidArgumentException('Parameter $htmls must be an array.');
+            throw new InvalidArgumentException('Parameter $htmls must be an array.');
         }
 
         // create temporary pdf output file
@@ -47,7 +35,7 @@ class PDFGenerator
         // create temporary html files
         $htmlFile = $this->createTemporaryFile('tmp', 'html');
 
-        $htmlFiles = array();
+        $htmlFiles = [];
         foreach ($htmls as $html) {
             $filename = $this->createTemporaryFile('pdf_html', 'txt', $html);
             $htmlFiles[] = $filename;
@@ -67,46 +55,27 @@ class PDFGenerator
         return $result;
     }
 
-    /**
-     * @param $htmlFile - the temporary html files the pdf is generated from
-     * @param string $encoding - set the html (input) and pdf (output) encoding
-     * @param string $pdfFile - the temporaray pdf file which the stream will be written to
-     * @param array $fontPaths - paths to extra font files
-     * @return string
-     */
-    public function generate($htmlFile, $encoding, $pdfFile, array $fontPaths = array())
+    public function generate(string $htmlFile, string $encoding, string $pdfFile, array $fontPaths = []): string
     {
         // build command to call the pdf library
         $command = $this->buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths);
 
-        list($status, $stdout, $stderr) = $this->executeCommand($command);
+        [$status, $stdout, $stderr] = $this->executeCommand($command);
         $this->checkStatus($status, $stdout, $stderr, $command);
 
         $pdf = file_get_contents($pdfFile);
         unlink($pdfFile);
+
         return $pdf;
     }
 
-    /**
-     * @param $htmlFile - the temporary html file the pdf is generated from
-     * @param string $encoding - set the html (input) and pdf (output) encoding
-     * @param string $pdfFile - the temporaray pdf file which the stream will be written to
-     * @param array $fontPaths - paths to extra font files
-     * @return string
-     */
-    private function buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths)
+    private function buildCommand(string $htmlFile, string $encoding, string $pdfFile, array $fontPaths): string
     {
-        $resource = '@SpraedPDFGeneratorBundle/Resources/java/spraed-pdf-generator.jar';
-
-        try {
-            $path = $this->kernel->locateResource($resource);
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException(sprintf('Unable to load "%s"', $resource), 0, $e);
-        }
+        $path = __DIR__ . '/../Resources/java/spraed-pdf-generator.jar';
 
         $javaParams = $this->getOption('java');
         if (!isset($javaParams['full_pathname'])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf('SpreadPDFGenerator not correctly configured: Unable to find java full pathname')
             );
         }
@@ -123,19 +92,15 @@ class PDFGenerator
         return $command;
     }
 
-    /**
-     * @param string $command - the command which will be executed to generate the pdf
-     * @return array
-     */
-    public function executeCommand($command)
+    public function executeCommand(string $command): array
     {
         $stdout = $stderr = $status = null;
-        $pipes = array();
-        $descriptorspec = array(
+        $pipes = [];
+        $descriptorspec = [
             // stdout is a pipe that the child will write to
-            1 => array('pipe', 'w'),
+            1 => ['pipe', 'w'],
             // stderr is a pipe that the child will write to
-            2 => array('pipe', 'w'));
+            2 => ['pipe', 'w']];
 
         $process = proc_open($command, $descriptorspec, $pipes);
 
@@ -156,22 +121,23 @@ class PDFGenerator
             $status = proc_close($process);
         }
 
-        return array($status, $stdout, $stderr);
+        return [$status, $stdout, $stderr];
     }
 
     /**
-     * @param string $filename - filename of the pdf
+     * @param string $filename  - filename of the pdf
      * @param string $extension - extension of file
-     * @param mixed $content - content to be put in generated file
+     * @param mixed  $content   - content to be put in generated file
+     *
      * @return string
      */
-    private function createTemporaryFile($filename, $extension, $content = null)
+    private function createTemporaryFile(string $filename, string $extension, $content = null): string
     {
-        $extension = empty($extension) ?: '.' . $extension;
-        
+        $extension = empty($extension) ? '' : '.' . $extension;
+
         $file = sys_get_temp_dir()
             . DIRECTORY_SEPARATOR
-            . uniqid($filename)
+            . uniqid($filename, true)
             . $extension;
 
         if (null !== $content) {
@@ -181,19 +147,10 @@ class PDFGenerator
         return $file;
     }
 
-    /**
-     *
-     * @param  int $status The exit status code
-     * @param  string $stdout The stdout content
-     * @param  string $stderr The stderr content
-     * @param  string $command The run command
-     *
-     * @throws \RuntimeException if the output file generation failed
-     */
-    private function checkStatus($status, $stdout, $stderr, $command)
+    private function checkStatus(int $status, string $stdout, string $stderr, string $command): void
     {
         if (0 !== $status) {
-            throw new \RuntimeException(sprintf(
+            throw new RuntimeException(sprintf(
                 'The exit status code \'%s\' says something went wrong:' . "\n"
                 . 'stderr: "%s"' . "\n"
                 . 'stdout: "%s"' . "\n"
@@ -205,10 +162,11 @@ class PDFGenerator
 
     /**
      *
-     * @param string $key key option
+     * @param string $key
+     *
      * @return mixed
      */
-    private function getOption($key)
+    private function getOption(string $key)
     {
         if (!isset($this->options[$key])) {
             return null;

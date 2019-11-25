@@ -11,62 +11,16 @@ So you need to run Java on your server (Java 6 or later).
 <!-- [![Build Status](https://secure.travis-ci.org/stedekay/SpraedPDFGeneratorBundle.png)](http://travis-ci.org/stedekay/SpraedPDFGeneratorBundle) -->
 [![Total Downloads](https://poser.pugx.org/spraed/pdf-generator-bundle/downloads.png)](https://packagist.org/packages/spraed/pdf-generator-bundle) [![Latest Stable Version](https://poser.pugx.org/spraed/pdf-generator-bundle/v/stable.png)](https://packagist.org/packages/spraed/pdf-generator-bundle)
 
-ToDo
-----
-
-- Write a little example how to enable header and footer
-- Writing tests (test frame available for UnitTests)
-- Check for possibilities to use SVG files in HTML
-
-Installation
+Installation using Composer
 ------------
 
-Option 1: Use composer
-
-    "require": {
-        "php": ">=5.3.2",
-        "symfony/symfony": "2.1.*",
-
-        ... (your packages) ...
-
-        "spraed/pdf-generator-bundle": "v1.0",
-    }
-
-Option 2: Use git submodules
-
-Copy the SpraedPDFGeneratorBundle into the `vendor/bundles/Spraed/PDFGeneratorBundle` directory:
-
-    git submodule add https://github.com/stedekay/SpraedPDFGeneratorBundle.git vendor/bundles/Spraed/PDFGeneratorBundle
-
-Option 3: Use deps file
-
-    [SpraedPDFGeneratorBundle]
-        git=https://github.com/stedekay/SpraedPDFGeneratorBundle.git
-        target=/bundles/Spraed/PDFGeneratorBundle
-
-
-Register the Spraed namespace:
--------------------------------------------------
-
-    $loader->registerNamespaces(array(
-        ...
-        'Spraed'                        => __DIR__.'/../vendor/bundles',
-
-Finally, you can enable it in your kernel:
-
-    // app/AppKernel.php
-    public function registerBundles()
-    {
-        $bundles = array(
-            ...
-            new Spraed\PDFGeneratorBundle\SpraedPDFGeneratorBundle(),
-            ...
+    composer require spraed/pdf-generator-bundle
 
 Usage
 -----
 
 There is a service registered in the services.yml to generate pdf files.
-Just call the PDF generator from the service class and call the generatePDF()-method
+Just call the PDF generator from the service class and call the generatePDF() method
 with the XHTML and the url of the PDF:
 
 	$html = $this->renderView('AcmeDemoBundle:Default:index.html.twig');
