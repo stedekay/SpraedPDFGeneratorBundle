@@ -13,13 +13,31 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
+     * Proxy to get root node for Symfony < 4.2.
+     *
+     * @param TreeBuilder $treeBuilder
+     * @param string      $name
+     *
+     * @return NodeDefinition
+     */
+    protected function getRootNode(TreeBuilder $treeBuilder, string $name)
+    {
+        if (\method_exists($treeBuilder, 'getRootNode')) {
+ 
+            return $treeBuilder->getRootNode();
+        }
+        
+        return $treeBuilder->root($name);
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('spraed_pdf_generator');
 
-        $treeBuilder->getRootNode()
+        $this->getRootNode($treeBuilder, 'spraed_pdf_generator')
             ->children()
             ->arrayNode('java')
             ->children()
