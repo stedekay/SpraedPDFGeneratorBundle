@@ -14,7 +14,6 @@ class Configuration implements ConfigurationInterface
 {
     /**
      * Proxy to get root node for Symfony < 4.2.
-     * Props to William Durand <william.durand1@gmail.com> in BazingaGeocoderBundle
      *
      * @param TreeBuilder $treeBuilder
      * @param string      $name
@@ -24,10 +23,11 @@ class Configuration implements ConfigurationInterface
     protected function getRootNode(TreeBuilder $treeBuilder, string $name)
     {
         if (\method_exists($treeBuilder, 'getRootNode')) {
+ 
             return $treeBuilder->getRootNode();
-        } else {
-            return $treeBuilder->root($name);
         }
+        
+        return $treeBuilder->root($name);
     }
     
     /**
