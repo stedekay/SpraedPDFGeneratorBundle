@@ -10,9 +10,6 @@ jobs:
         operating-system: [ ubuntu-latest, windows-latest, macos-latest ]
         php-versions: [ '7.3', '7.4', '8.0' ]
     steps:
-      - name: Output 1
-        run: echo "::debug::Checkout"
-
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -36,5 +33,5 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run Tests
-        run: php bin/phpunit
+        run: php vendor/phpunit/phpunit/phpunit
 
