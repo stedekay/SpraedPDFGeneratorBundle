@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        run: echo 'Checkout'
 
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
