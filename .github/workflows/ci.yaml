@@ -1,14 +1,14 @@
 name: Run Tests
-on: [push, pull_request]
+on: [ push, pull_request ]
 jobs:
-  symfony:
-    name: Symfony (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+  PHPUnit:
+    name: Run Unit Tests (PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest, windows-latest, macos-latest]
-        php-versions: ['7.3', '7.4', '8.0']
+        operating-system: [ ubuntu-latest, windows-latest, macos-latest ]
+        php-versions: [ '7.3', '7.4', '8.0' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
