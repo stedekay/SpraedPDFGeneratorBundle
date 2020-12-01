@@ -10,11 +10,11 @@ jobs:
         operating-system: [ ubuntu-latest, windows-latest, macos-latest ]
         php-versions: [ '7.3', '7.4', '8.0' ]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Output 1
         run: echo 'Checkout'
+
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2
