@@ -5,7 +5,7 @@ namespace Spraed\PDFGeneratorBundle\PDFGenerator;
 use InvalidArgumentException;
 use RuntimeException;
 
-final class PDFGenerator
+final class PDFGenerator implements PDFGeneratorInterface
 {
     /**
      * @var array
