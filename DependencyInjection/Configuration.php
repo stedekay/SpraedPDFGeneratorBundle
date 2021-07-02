@@ -23,13 +23,13 @@ class Configuration implements ConfigurationInterface
     protected function getRootNode(TreeBuilder $treeBuilder, string $name)
     {
         if (\method_exists($treeBuilder, 'getRootNode')) {
- 
+
             return $treeBuilder->getRootNode();
         }
-        
+
         return $treeBuilder->root($name);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -39,6 +39,14 @@ class Configuration implements ConfigurationInterface
 
         $this->getRootNode($treeBuilder, 'spraed_pdf_generator')
             ->children()
+            ->arrayNode('command')
+                ->children()
+                    ->arrayNode('env')
+                        ->prototype('scalar')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
             ->arrayNode('java')
             ->children()
             ->scalarNode('full_pathname')->defaultValue('')->end()

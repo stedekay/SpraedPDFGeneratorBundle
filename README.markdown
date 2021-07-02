@@ -72,3 +72,19 @@ To define proper print css you might want to read into the w3.org's hints on tha
 [w3.org]: http://www.w3.org/TR/css3-page/
 [flyingsaucer]: https://github.com/flyingsaucerproject/flyingsaucer
 [spraed]: http://www.spraed.com
+
+Configuration
+-------------
+
+Example configuration options:
+
+        spraed_pdf_generator:
+            command:
+                env:
+                    FOO: BAR
+            java:
+                full_path: /path/to/java
+
+The command environment will add environment variables when running the Java
+application.
+
