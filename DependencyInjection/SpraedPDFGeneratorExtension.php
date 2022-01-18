@@ -40,7 +40,7 @@ class SpraedPDFGeneratorExtension extends Extension
     /**
      * @return string
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'spraed_pdf_generator';
     }
