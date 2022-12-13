@@ -32,8 +32,6 @@
             "Spraed\\PDFGeneratorBundle\\Tests\\": "tests"
         }
     },
-
-    "target-dir": "Spraed/PDFGeneratorBundle",
     "require-dev": {
         "phpunit/phpunit": "^8.4"
     }
