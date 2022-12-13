@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\PDFGenerator;
+namespace Spraed\PDFGeneratorBundle\Tests\PDFGenerator;
 
 use PHPUnit\Framework\TestCase;
 use Spraed\PDFGeneratorBundle\PDFGenerator\PDFGenerator;

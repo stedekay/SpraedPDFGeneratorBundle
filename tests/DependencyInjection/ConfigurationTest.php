@@ -10,17 +10,17 @@ class ConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
 
-    protected function getConfiguration()
+    protected function getConfiguration(): Configuration
     {
         return new Configuration();
     }
 
-    public function testEmptyConfigurationIsValid()
+    public function testEmptyConfigurationIsValid(): void
     {
         $this->assertConfigurationIsValid(array());
     }
 
-    public function testCommandEnvironmentCanBeSpecified()
+    public function testCommandEnvironmentCanBeSpecified(): void
     {
         $this->assertConfigurationIsValid(
             array(
@@ -35,7 +35,7 @@ class ConfigurationTest extends TestCase
         );
     }
 
-    public function testJavaFullPathCanBeConfigured()
+    public function testJavaFullPathCanBeConfigured(): void
     {
         $this->assertConfigurationIsValid(
             array(

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="./Tests/bootstrap.php.dist">
+<phpunit colors="true" bootstrap="./tests/bootstrap.php.dist">
     <php>
          <!--<server name="KERNEL_DIR" value="Tests/App />-->
     </php>
     <testsuites>
         <testsuite name="PDFGeneratorBundle Test Suite">
-            <directory suffix="Test.php">./Tests/</directory>
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
             <directory>./</directory>
             <exclude>
-                <directory>./Tests</directory>
+                <directory>./tests</directory>
             </exclude>
         </whitelist>
     </filter>

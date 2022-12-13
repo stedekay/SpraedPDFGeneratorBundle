@@ -10,6 +10,6 @@
 /.idea
 
 /phpunit.xml
-/Tests/autoload.php
+/tests/autoload.php
 /vendor/
 /composer.lock

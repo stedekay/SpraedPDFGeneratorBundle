@@ -7,14 +7,8 @@ use RuntimeException;
 
 final class PDFGenerator implements PDFGeneratorInterface
 {
-    /**
-     * @var array
-     */
-    private $options;
-
-    public function __construct($options)
+    public function __construct(private array $options)
     {
-        $this->options = $options;
     }
 
     public function generatePDF(string $html, string $encoding = 'UTF-8', array $fontPaths = []): string
@@ -24,15 +18,7 @@ final class PDFGenerator implements PDFGeneratorInterface
 
     public function generatePDFs(array $htmls, string $encoding = 'UTF-8', array $fontPaths = []): string
     {
-        // check if the first parameter is an array, throw exception otherwise
-        if (!is_array($htmls)) {
-            throw new InvalidArgumentException('Parameter $htmls must be an array.');
-        }
-
-        // create temporary pdf output file
         $pdfFile = $this->createTemporaryFile('output', 'pdf');
-
-        // create temporary html files
         $htmlFile = $this->createTemporaryFile('tmp', 'html');
 
         $htmlFiles = [];
@@ -43,10 +29,8 @@ final class PDFGenerator implements PDFGeneratorInterface
             file_put_contents($htmlFile, $filename . PHP_EOL, FILE_APPEND);
         }
 
-        // generate the pdf
         $result = $this->generate($htmlFile, $encoding, $pdfFile, $fontPaths);
 
-        // remove temporary files
         foreach ($htmlFiles as $files) {
             unlink($files);
         }
@@ -57,7 +41,6 @@ final class PDFGenerator implements PDFGeneratorInterface
 
     public function generate(string $htmlFile, string $encoding, string $pdfFile, array $fontPaths = []): string
     {
-        // build command to call the pdf library
         $command = $this->buildCommand($htmlFile, $encoding, $pdfFile, $fontPaths);
 
         [$status, $stdout, $stderr] = $this->executeCommand($command);
@@ -76,7 +59,7 @@ final class PDFGenerator implements PDFGeneratorInterface
         $javaParams = $this->getOption('java');
         if (!isset($javaParams['full_pathname'])) {
             throw new InvalidArgumentException(
-                sprintf('SpreadPDFGenerator not correctly configured: Unable to find java full pathname')
+                'SpreadPDFGenerator not correctly configured: Unable to find java full pathname'
             );
         }
 
@@ -94,8 +77,11 @@ final class PDFGenerator implements PDFGeneratorInterface
 
     public function executeCommand(string $command): array
     {
-        $stdout = $stderr = $status = null;
+        $stdout = null;
+        $stderr = null;
+        $status = null;
         $pipes = [];
+
         $descriptorspec = [
             // stdout is a pipe that the child will write to
             1 => ['pipe', 'w'],
@@ -109,7 +95,7 @@ final class PDFGenerator implements PDFGeneratorInterface
             $descriptorspec,
             $pipes,
             null,
-            isset($commandOpts['env']) ? $commandOpts['env'] : null
+            $commandOpts['env'] ?? null
         );
 
         if (is_resource($process)) {
@@ -132,14 +118,7 @@ final class PDFGenerator implements PDFGeneratorInterface
         return [$status, $stdout, $stderr];
     }
 
-    /**
-     * @param string $filename  - filename of the pdf
-     * @param string $extension - extension of file
-     * @param mixed  $content   - content to be put in generated file
-     *
-     * @return string
-     */
-    private function createTemporaryFile(string $filename, string $extension, $content = null): string
+    private function createTemporaryFile(string $filename, string $extension, mixed $content = null): string
     {
         $extension = empty($extension) ? '' : '.' . $extension;
 
@@ -168,18 +147,8 @@ final class PDFGenerator implements PDFGeneratorInterface
         }
     }
 
-    /**
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
-    private function getOption(string $key)
+    private function getOption(string $key): mixed
     {
-        if (!isset($this->options[$key])) {
-            return null;
-        }
-
-        return $this->options[$key];
+        return $this->options[$key] ?? null;
     }
 }
