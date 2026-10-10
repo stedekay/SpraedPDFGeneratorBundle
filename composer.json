@@ -17,9 +17,9 @@
     ],
 
     "require": {
-        "php":                      "^8.0",
-        "symfony/framework-bundle": "^6.0.4||^7.0||^8.0",
-        "matthiasnoback/symfony-config-test": "^5.0||^6.1"
+        "php":                      "^8.1",
+        "symfony/framework-bundle": "^6.4||^7.4||^8.0",
+        "matthiasnoback/symfony-config-test": "^6.1"
     },
 
     "autoload": {
